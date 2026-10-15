@@ -1,0 +1,205 @@
+<title>Vault 81 Loot Route</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<style>
+/* Layout: Pip-Boy terminal. Schematic map left, stop checklist right; stacks on phones. */
+:root{
+  --bg:#0b1208; --panel:#101a0c; --line:#2a4a1f; --fg:#c9f2b0; --dim:#7fa56a;
+  --accent:#6bff3c; --sell:#ffb347; --warn:#ff7a59; --water:#0a1f2b;
+  --land:#142310; --font-d:'VT323','Courier New',monospace; --font-b:'IBM Plex Sans',system-ui,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--font-b);
+  padding-block:16px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--font-d);font-weight:400;letter-spacing:.04em;margin:0;text-wrap:balance}
+h1{font-size:2.4rem;color:var(--accent);line-height:1}
+h2{font-size:1.8rem;color:var(--accent)}
+h3{font-size:1.3rem;color:var(--sell)}
+.wrap{max-width:1200px;margin:0 auto;display:grid;gap:16px}
+.note{border:1px solid var(--warn);background:var(--panel);padding:10px 14px;font-size:.88rem;color:var(--fg)}
+.note b{color:var(--warn)}
+.grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;align-items:start}
+@media(max-width:820px){.grid{grid-template-columns:minmax(0,1fr)}}
+.map{border:1px solid var(--line);background:var(--water);width:100%;display:block;aspect-ratio:1/1}
+.land{fill:var(--land);stroke:var(--line);stroke-width:.4}
+.road{stroke:var(--line);stroke-width:.5;fill:none}
+.route{stroke:var(--accent);stroke-width:.6;fill:none;stroke-dasharray:1.6 1.2;opacity:.8}
+.pin{cursor:pointer}
+.pin circle.dot{fill:var(--panel);stroke:var(--accent);stroke-width:.6}
+.pin.sell circle.dot{stroke:var(--sell)}
+.pin.opt circle.dot{stroke-dasharray:1 .8}
+.pin text.n{font:3.4px var(--font-d);fill:var(--fg);text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.pin text.l{font:2.8px var(--font-b);fill:var(--dim);pointer-events:none}
+.pin:hover circle.dot,.pin:focus circle.dot,.pin.on circle.dot{fill:var(--accent)}
+.pin.on text.n,.pin:hover text.n{fill:var(--bg)}
+.pin:focus{outline:none}
+.pin:focus-visible circle.dot{stroke:#fff;stroke-width:1}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.8rem;color:var(--dim);margin-top:8px}
+.legend i{display:inline-block;width:10px;height:10px;border:2px solid var(--accent);border-radius:50%;margin-right:6px;vertical-align:-1px}
+.legend i.s{border-color:var(--sell)}
+.panel{border:1px solid var(--line);background:var(--panel);padding:16px;min-width:0}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 10px}
+.tag{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line);padding:1px 8px;color:var(--dim)}
+.tag.sell{color:var(--sell);border-color:var(--sell)}
+.tag.lo{color:var(--warn);border-color:var(--warn)}
+ul.loot{list-style:none;padding:0;margin:8px 0;display:grid;gap:8px}
+ul.loot li{display:grid;grid-template-columns:auto 1fr;gap:10px}
+ul.loot input{accent-color:var(--accent);width:18px;height:18px;margin-top:3px}
+ul.loot label{min-width:0}
+ul.loot b{color:var(--accent);font-weight:600}
+ul.loot small{display:block;color:var(--dim)}
+ul.loot input:checked+label{opacity:.45;text-decoration:line-through}
+.nav{display:flex;gap:8px;margin-top:12px}
+button{font:1.2rem var(--font-d);letter-spacing:.05em;background:transparent;color:var(--accent);border:1px solid var(--accent);padding:2px 14px;cursor:pointer}
+button:hover,button:focus-visible{background:var(--accent);color:var(--bg);outline:none}
+.steps{margin:0;padding-left:1.2em;display:grid;gap:4px}
+.steps a{color:var(--fg);cursor:pointer;text-decoration:underline;text-decoration-color:var(--line)}
+.steps a:hover{color:var(--accent)}
+.out{color:var(--sell)}
+a.ext{color:var(--accent)}
+</style>
+
+<div class="wrap">
+  <div>
+    <h1>VAULT 81 LOOT ROUTE</h1>
+    <div style="color:var(--dim)">Sanctuary Hills to Vault 81 &middot; valuables, rare weapons, and where to sell</div>
+  </div>
+
+  <div class="note"><b>Read this first.</b> The map is a hand-drawn schematic, not the game's map, and stop positions are approximate. Use it for order and rough direction. For exact positions, use the in-game map or <a class="ext" href="https://mapgenie.io/fallout-4/maps/commonwealth" target="_blank" rel="noopener">Map Genie's Commonwealth map</a>. I could not check these notes against a wiki, so each stop shows a confidence tag. "Check in game" means the detail is from memory and may be off. Vault 81's position in particular is only roughly placed.</div>
+
+  <div class="grid">
+    <div>
+      <svg class="map" id="map" viewBox="0 0 100 100" role="img" aria-label="Schematic map of the route from Sanctuary Hills to Vault 81">
+        <path class="land" d="M4 14 L30 8 L52 14 L70 10 L84 24 L90 44 L88 66 L80 86 L58 94 L30 92 L10 84 L4 56 Z"/>
+        <path class="road" d="M14 24 L22 32 L36 42 L50 46 L62 54 L72 52 L70 74"/>
+        <polyline class="route" id="route"/>
+        <g id="pins"></g>
+        <text x="8" y="8" font-size="3" fill="#7fa56a" font-family="IBM Plex Sans">N &uarr; &middot; schematic only</text>
+      </svg>
+      <div class="legend"><span><i></i>Loot stop</span><span><i class="s"></i>Selling stop</span><span>Dashed ring = optional detour</span></div>
+      <div class="panel" style="margin-top:16px">
+        <h2>Route at a glance</h2>
+        <ol class="steps" id="steps"></ol>
+      </div>
+    </div>
+    <div class="panel" id="detail" aria-live="polite"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Weight rules for the whole trip</h2>
+    <ul class="loot">
+      <li><span></span><div>Scrap-and-store at settlements. Anything you only want as building material goes into a workshop at Sanctuary, so don't haul it.</div></li>
+      <li><span></span><div>Carry by value per pound: Fusion Cores (keep a few), Stealth Boys, Mini Nukes, chems, ammo, pre-war money, and weapons only if they are legendary or you can use them. Leave heavy bulk junk and plain 10mm pistols, hunting rifles, and raider armor behind.</div></li>
+      <li><span></span><div>Perks that help: Strong Back and Pack Mule (Strength), Barter and Hacker/Local Leader style trade perks (Charisma), and Dogmeat or another companion as a mule. Use the Pip-Boy's weight sort to find your heaviest items first.</div></li>
+      <li><span></span><div>Legendary (star) enemies drop the rare weapons you want. When you see a glowing or star-marked enemy, fight it from range, then loot the legendary item and leave the junk.</div></li>
+    </ul>
+  </div>
+</div>
+
+<script>
+// x,y are schematic coordinates (0-100), not game coordinates.
+var STOPS=[
+{id:"sanct",n:1,name:"Sanctuary Hills",x:14,y:22,tags:[["Start / stash"],["Medium confidence","lo"]],
+ intro:"Your base. Drop what you don't need and set up a stash before you leave.",
+ loot:[
+  ["Scrap the houses with the workshop","Settlement workshop","Build a workbench container and keep scrap here so you start the trip with free weight.","c"],
+  ["Stash spare gear","Workshop container","Leave heavy armor and unused weapons. Take only ammo, chems, and healing.","c"],
+  ["Put your hunting/10mm weapons to use","Inventory","You will find better weapons on the way, so don't sell your starting gear for pennies.","c"]],
+ sell:"No vendor here. Settlement vendors may exist later if you build shops."},
+{id:"rocket",n:2,name:"Red Rocket Truck Stop",x:17,y:27,tags:[["Loot"],["Check in game","lo"]],
+ intro:"Just over the bridge from Sanctuary. Mole rats in the basement.",
+ loot:[
+  ["Fusion Core","Basement area past the mole rats","Reported by a guide I found, but I could not confirm the exact container. Check in game.","l"],
+  ["Basic junk, ammo, and a workbench","Garage and shop","Quick scrap and ammo pickups.","l"]],
+ sell:"No vendor. Keep the loot to carry."},
+{id:"concord",n:3,name:"Concord / Museum of Freedom",x:23,y:32,tags:[["Rare weapons"],["Power armor"],["Medium confidence","lo"]],
+ intro:"The first big stop. Preston's quest leads here and sets you up with heavy gear.",
+ loot:[
+  ["T-45 power armor","Museum of Freedom roof, with Preston","You get the frame during the quest. You also need Fusion Cores to run it.","m"],
+  ["Minigun","Museum of Freedom, ground level","Tied to the same quest. Heavy and ammo-hungry, so decide whether you will actually use it.","m"],
+  ["Ammo and chems","Along Concord streets","Scoop the small, light stuff only.","m"]],
+ sell:"Sell nothing here. Concord has no trader."},
+{id:"lex",n:4,name:"Lexington",x:35,y:42,tags:[["Combat"],["Loot"],["Check in game","lo"]],
+ intro:"A rough area with raiders and mutants, so expect to burn ammo.",
+ loot:[
+  ["Raider and gunner weapons","Enemy drops across the area","Read the weapon name. Keep only the ones with a legendary star or modded versions you can use.","l"],
+  ["Ammo, stimpaks, and chems","Enemy bodies and crates","These are light and valuable, so they are worth the weight.","l"]],
+ sell:"No safe trader. Wait for Diamond City."},
+{id:"corvega",n:5,name:"Corvega Assembly Plant",x:47,y:46,tags:[["Loot"],["Check in game","lo"]],
+ intro:"An old factory used as a hideout by raiders and gunners.",
+ loot:[
+  ["Weapons off tougher enemies","Inside the plant","Look for stars on enemies. Legendary effects are what make weapons rare here.","l"],
+  ["Steel, adhesive, and screws","Workbench and shelf areas","Take these only if you have the carry room. Leave them if not.","l"]],
+ sell:"No trader. Hold everything until Diamond City."},
+{id:"dc",n:6,name:"Diamond City",x:62,y:54,tags:[["Main selling stop"],["Sell","sell"],["Medium confidence","lo"]],
+ intro:"The best place on the route to sell. Plan to clear your inventory here.",
+ loot:[
+  ["Sell weapons and armor you can't use","Diamond City Market","Check the vendor stalls for weapons and armor buyers. Prices vary by vendor.","s"],
+  ["Sell junk and valuables","Market stalls","Vendors have a limited stock of caps, so split large sales across vendors.","s"],
+  ["Buy ammo and healing","Market stalls","Spend caps on light, high-value supplies before the last stretch.","s"]],
+ sell:"Sell here: unwanted weapons, armor, and valuables. Sell in batches across vendors because their caps are limited."},
+{id:"wilson",n:7,name:"Wilson Atomatoys",x:74,y:60,tags:[["Screws"],["Loot"],["Medium confidence","lo"]],
+ intro:"Best known for toys that yield screws. Take it only if you need them.",
+ loot:[
+  ["Giddyup toys","Factory floor","Two guides I found agree these give screws. Scrap them at a workbench rather than carrying them.","l"],
+  ["Scrap rather than carry","Workbench","Break items down on site so the weight stays low.","l"]],
+ sell:"No trader. Mostly a crafting stop."},
+{id:"v81",n:8,name:"Vault 81",x:70,y:78,tags:[["Destination"],["Sell","sell"],["Check in game","lo"]],
+ intro:"Your destination, in the southeast. Entry may involve a short quest or conversation.",
+ loot:[
+  ["Vault traders","Inside the vault","The vault has vendors. I could not verify who sells what, so check in game.","s"],
+  ["Sell what's left","Vault traders","Offload anything you carried this far.","s"]],
+ sell:"Sell what's left here. Traders in the vault buy goods."},
+{id:"goodn",n:"+",name:"Goodneighbor (optional)",x:62,y:36,tags:[["Optional"],["Sell","sell"],["Check in game","lo"]],
+ intro:"A detour north of Diamond City if you want another buyer.",
+ opt:1,
+ loot:[
+  ["Extra vendors","The town's stalls","A second place to sell if Diamond City's vendors run out of caps.","s"]],
+ sell:"Optional second selling stop."}
+];
+
+var cur=null,pinsEl=document.getElementById('pins'),ns='http://www.w3.org/2000/svg';
+var main=STOPS.filter(function(s){return !s.opt});
+document.getElementById('route').setAttribute('points',main.map(function(s){return s.x+','+s.y}).join(' '));
+
+function esc(t){var d=document.createElement('div');d.textContent=t;return d.innerHTML}
+
+STOPS.forEach(function(s,i){
+  var g=document.createElementNS(ns,'g');
+  g.setAttribute('class','pin'+(s.sell||s.tags.some(function(t){return t[1]==='sell'})?' sell':'')+(s.opt?' opt':''));
+  g.setAttribute('tabindex','0');g.setAttribute('role','button');
+  g.setAttribute('aria-label','Stop '+s.n+': '+s.name);
+  g.innerHTML='<circle class="dot" cx="'+s.x+'" cy="'+s.y+'" r="3.2"/><text class="n" x="'+s.x+'" y="'+s.y+'">'+s.n+'</text><text class="l" x="'+(s.x+4.6)+'" y="'+(s.y+1)+'">'+esc(s.name.replace(' (optional)',''))+'</text>';
+  g.addEventListener('click',function(){show(i)});
+  g.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();show(i)}});
+  pinsEl.appendChild(g);s.el=g;
+});
+
+var stepsEl=document.getElementById('steps');
+main.forEach(function(s){
+  var li=document.createElement('li');
+  var idx=STOPS.indexOf(s);
+  li.innerHTML='<a>'+esc(s.name)+'</a> <span style="color:var(--dim)">'+esc(s.intro)+'</span>';
+  li.firstChild.addEventListener('click',function(){show(idx)});
+  stepsEl.appendChild(li);
+});
+
+function show(i){
+  cur=i;var s=STOPS[i];
+  STOPS.forEach(function(t,j){t.el.classList.toggle('on',j===i)});
+  var tags=s.tags.map(function(t){return '<span class="tag '+(t[1]||'')+'">'+esc(t[0])+'</span>'}).join('');
+  var items=s.loot.map(function(l,k){
+    var id='c-'+s.id+'-'+k;
+    return '<li><input type="checkbox" id="'+id+'"><label for="'+id+'"><b>'+esc(l[0])+'</b><small>Where: '+esc(l[1])+'</small><small>'+esc(l[2])+'</small></label></li>';
+  }).join('');
+  document.getElementById('detail').innerHTML=
+    '<h2>'+s.n+'. '+esc(s.name)+'</h2><div class="tags">'+tags+'</div><div>'+esc(s.intro)+'</div>'+
+    '<h3 style="margin-top:14px">What to get</h3><ul class="loot">'+items+'</ul>'+
+    '<h3>Selling / storage</h3><div class="out">'+esc(s.sell)+'</div>'+
+    '<div class="nav"><button id="prev">&larr; PREV</button><button id="next">NEXT &rarr;</button></div>';
+  document.getElementById('prev').onclick=function(){show((cur+STOPS.length-1)%STOPS.length)};
+  document.getElementById('next').onclick=function(){show((cur+1)%STOPS.length)};
+}
+show(0);
+</script>
